@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id="userid" placeholder="Enter User name"/>
+    <br>
+    <input type="text" id="message" placeholder="Enter send message"/>
+    <input type="button" id="btnSend" value="Send"/>
+    <ul id="msglist"></ul>
+    <script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="node_modules/@aspnet/signalr/dist/browser/signalr.js"></script>
+    <script>
+    $(function(){
+        let hubUrl = 'http://localhost:2710/charhub';
+        console.log(signalR);
+
+        let httpConnection =  new signalR.HttpConnection(hubUrl);
+        let hubConnection = new signalR.HubConnection(httpConnection);
+
+        $('#btnSend').click(function(){
+            let obj = new Object();
+            obj.UserName = $('#userid').val();
+            obj.Message = $('#message').val();
+            hubConnection.invoke('SendMsg' , obj);
+        });
+
+        hubConnection.on('Show' ,data=>{
+            $('#msglist').append($('<li>').text(data));
+        });
+        hubConnection.start();
+    });
+    </script>
+</body>
+</html>
